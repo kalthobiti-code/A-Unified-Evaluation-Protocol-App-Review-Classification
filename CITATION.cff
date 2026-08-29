@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this replication package, please cite the associated paper."
+title: "Replication Package: A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification"
+type: software
+authors:
+  - family-names: "Althobiti"
+    given-names: "Khalid"
+version: 1.0.0
+date-released: 2026-08-29
+preferred-citation:
+  type: article
+  title: "A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification"
+  authors:
+    - family-names: "Althobiti"
+      given-names: "Khalid"
+  notes: "Publication venue, volume, pages, and DOI will be added after publication."

@@ -1,0 +1,14 @@
+Dataset,Class,Keywords
+clap,Bug,"fix, fixing, flaw, patched, patch, unwanted, vulnerability, bounty, releasing, maintainer"
+clap,Feature,"functionality, enhancement, customization, customizable, plugins, option, configurable, enhanced, capability, custom"
+clap,Performance,"efficiency, scalability, reliability, responsiveness, improvement, improving, workload, speed, improve, improves"
+clap,Security,"countermeasure, protection, protecting, assurance, privacy, authentication, securing, hardening, protect"
+clap,Energy,"consumption, capacity, battery, latency, utilization, limit, cooling, increase, superconducting, increased"
+clap,Usability,"accessibility, aesthetic, experience, contextual, satisfaction, sus, ease, walkthrough, inquiry, prototyping"
+clap,Other,
+pan,Feature Request,"delete, functionality, customization, customizable, option, configurable, custom, adding, customized, preview"
+pan,Information Giving,"describing, abstract, formal, syntactic, rewriting, specification, described, appendix, describes, defining"
+pan,Problem Discovery,"defect, detected, deadlock, guarantee, faulty, tolerance, flaw, vulnerability, incorrect, correct"
+pan,Information Seeking,"answer, answered, answering, possibility, fact, reply, opinion, subgoal, moral, asks"
+f-droid,Crashes,"prevented, corruption, prevents, causing, escalation, caused, prevent, preventing, detected, standby"
+f-droid,Feature & UI Bugs,"customizable, zooming, graphical, widget, toolkits, functionality, customization, tweak, api, skinning"

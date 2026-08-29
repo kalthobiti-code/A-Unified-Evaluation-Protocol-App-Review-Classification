@@ -1,0 +1,116 @@
+Prompt Templates for Experiment 2: Prompting-Based Evaluation
+============================================================
+
+Purpose
+-------
+This file documents the prompt components used in the prompting experiments.
+The wording below is reproduced from the experimental code used for Experiment 1
+(Zero-Shot) and Experiment 2 (Prompting). The prompt is assembled dynamically
+according to the FEWSHOT_ON, PERSONA_ON, and COT_ON switches.
+
+1. Persona Template
+-------------------
+You are an AI system tasked with classifying app reviews into predefined categories. Assign exactly one category to each review based solely on its content and the provided category definitions.
+
+2. Chain-of-Thought (CoT) Instruction
+-------------------------------------
+Classify the following review into exactly one of the predefined categories. Consider the category definitions carefully before making the final decision. Output only the final category label.
+
+Note: Although this configuration is referred to as CoT in the experiment, only the final predicted category label is retained for evaluation.
+
+3. Few-Shot Component
+---------------------
+When FEWSHOT_ON = True, the prompt inserts the externally constructed examples for the selected dataset before the classification instruction. Each example is formatted as:
+
+Review: <example review text>
+Label: <example category label>
+
+Two examples are provided for each category. The complete examples are supplied separately in the Few-Shot Examples file.
+
+4. Final Classification Instruction
+-----------------------------------
+After the optional Persona, Few-Shot, and CoT components are added, the following task instruction is appended:
+
+You will classify EXACTLY <N> app reviews.
+Return ONLY JSON: {"labels":[...]}.
+Labels: <dataset-specific label list>
+Input:
+<JSON-formatted list of reviews>
+
+The system message sent to the API is:
+
+Return only JSON.
+
+5. Prompt Assembly Mechanism
+----------------------------
+The experimental code builds each prompt in the following order:
+
+1) Persona component, if PERSONA_ON = True
+2) Few-Shot examples, if FEWSHOT_ON = True
+3) CoT instruction, if COT_ON = True
+4) Final classification instruction and dataset-specific label list
+5) Input reviews
+
+The three Boolean switches generate the prompting configurations used in the study.
+
+Configuration Mapping
+---------------------
+Few-Shot:
+  FEWSHOT_ON = True
+  PERSONA_ON = False
+  COT_ON = False
+
+Persona + Zero-Shot:
+  FEWSHOT_ON = False
+  PERSONA_ON = True
+  COT_ON = False
+
+Persona + Few-Shot:
+  FEWSHOT_ON = True
+  PERSONA_ON = True
+  COT_ON = False
+
+CoT + Zero-Shot:
+  FEWSHOT_ON = False
+  PERSONA_ON = False
+  COT_ON = True
+
+CoT + Few-Shot:
+  FEWSHOT_ON = True
+  PERSONA_ON = False
+  COT_ON = True
+
+Persona + CoT + Zero-Shot:
+  FEWSHOT_ON = False
+  PERSONA_ON = True
+  COT_ON = True
+
+Persona + CoT + Few-Shot:
+  FEWSHOT_ON = True
+  PERSONA_ON = True
+  COT_ON = True
+
+Instruction-Only Zero-Shot Baseline
+-----------------------------------
+For the instruction-only zero-shot baseline, all three optional components are disabled:
+
+  FEWSHOT_ON = False
+  PERSONA_ON = False
+  COT_ON = False
+
+Only the final classification instruction, dataset-specific labels, and input reviews are provided.
+
+6. Dataset-Specific Elements
+----------------------------
+The prompt structure remains fixed across datasets and models. Only the category labels,
+label definitions, few-shot examples, and input reviews change according to the selected
+dataset (CLAP, Pan, or F-Droid).
+
+7. API Generation Setting
+-------------------------
+The generative API calls use:
+
+  temperature = 0.0
+
+For OpenAI GPT-4o, JSON-object response formatting is additionally requested by the code.
+
