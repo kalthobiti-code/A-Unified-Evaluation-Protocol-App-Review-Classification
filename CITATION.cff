@@ -7,8 +7,11 @@ authors:
     given-names: "Khalid"
   - family-names: "Al-Hashimi"
     given-names: "Hussein Ali Abdullah"
-version: 1.0.0
+version: 1.0.1
 date-released: 2026-08-29
+doi: "10.5281/zenodo.22159105"
+url: "https://doi.org/10.5281/zenodo.22159105"
+
 preferred-citation:
   type: article
   title: "A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification"
@@ -17,4 +20,4 @@ preferred-citation:
       given-names: "Khalid"
     - family-names: "Al-Hashimi"
       given-names: "Hussein Ali Abdullah"
-  notes: "Publication venue, volume, pages, and DOI will be added after publication."
+  notes: "Publication venue, volume, pages, and article DOI will be added after publication."
