@@ -5,6 +5,8 @@ type: software
 authors:
   - family-names: "Althobiti"
     given-names: "Khalid"
+  - family-names: "Al-Hashimi"
+    given-names: "Hussein Ali Abdullah"
 version: 1.0.0
 date-released: 2026-08-29
 preferred-citation:
@@ -13,4 +15,6 @@ preferred-citation:
   authors:
     - family-names: "Althobiti"
       given-names: "Khalid"
+    - family-names: "Al-Hashimi"
+      given-names: "Hussein Ali Abdullah"
   notes: "Publication venue, volume, pages, and DOI will be added after publication."
