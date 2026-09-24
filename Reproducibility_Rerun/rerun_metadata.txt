@@ -1,0 +1,19 @@
+=== Re-run Metadata ===
+Wed Sep 16 06:00:36 UTC 2026
+
+=== Hardware ===
+NVIDIA A100-SXM4-40GB, 580.105.08, 40960 MiB
+
+=== Software ===
+/home/ubuntu/.local/lib/python3.10/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/usr/lib/python3/dist-packages/scipy/__init__.py:146: UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+python: 3.10.12
+torch: 2.14.0+cu130
+transformers: 5.17.0
+peft: 0.20.0
+accelerate: 1.15.0
+cuda: 13.0
+GPT-4o ZS Pan Run 2 accessed at: 2026-09-16 06:23:50 UTC
+GPT-4o CoT+FS CLAP Run 2 accessed at: 2026-09-16 06:55:47 UTC

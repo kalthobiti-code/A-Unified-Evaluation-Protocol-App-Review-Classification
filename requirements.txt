@@ -1,17 +1,35 @@
+# Core scientific stack
 numpy
 pandas
 scikit-learn
 openpyxl
-torch==2.7.0
-transformers==4.56.1
-peft==0.17.1
-datasets
-accelerate
+
+# Deep learning
+torch==2.14.0
+transformers==5.17.0
+peft==0.20.0
+accelerate==1.15.0
 bitsandbytes
+datasets
+
+# Sentence embeddings (Experiment 1 - Embedding models)
 sentence-transformers
+
+# OpenAI GPT-4o (Experiment 1 - LLM, Experiment 2 - Prompting)
 openai
-groq
+
+# Statistical analysis
+statsmodels
+scipy
+
+# Resource monitoring
 psutil
-pynvml
+nvidia-ml-py
+
+# Keyword extraction (Experiment 3 - Compound Sparse Attention)
 gensim
 spacy
+# After installing: python -m spacy download en_core_web_sm
+
+# Excel support
+XlsxWriter

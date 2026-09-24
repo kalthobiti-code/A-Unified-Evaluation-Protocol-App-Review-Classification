@@ -1,239 +1,391 @@
 # A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification
 
-This repository contains the replication package for the study **“A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification.”**
+This repository is the replication package for the study **"A Unified
+Evaluation Protocol for Cross-Paradigm Mobile App Review
+Classification."**
 
-The study evaluates three learning paradigms for mobile app review classification under a common experimental protocol: zero-shot inference, prompting-based classification, and parameter-efficient fine-tuning (PEFT). The package contains the datasets used in the experiments, the experimental code, prompt materials, keyword-generation resources, raw experimental outputs, and the analysis files used to prepare the reported results.
+The study evaluates three learning paradigms for mobile app review
+classification under a common experimental protocol: (1) zero-shot
+inference, (2) prompting-based classification, and (3)
+parameter-efficient fine-tuning (PEFT). The package contains the
+datasets, the experimental code, prompt materials, keyword-generation
+resources, raw experimental outputs, analysis files, and independent
+re-run validation results.
 
-## Repository contents
+------------------------------------------------------------------------
 
-```text
-01_Datasets/
-    CLAP/
-    F-Droid/
-    Pan/
+## Repository Structure
 
-02_Zero_Shot/
-    code/
-    outputs/
-
-03_Prompting/
-    code/
-    prompt_materials/
-    outputs/
-
-04_PEFT/
-    code/
-    keyword_sets/
-    outputs/
-
-05_Analysis/
-
-.env.example
-requirements.txt
-CITATION.cff
-THIRD_PARTY_NOTICES.md
-SHA256SUMS.txt
+``` text
+Replication_Package_v1.0.2/
+├── README.md
+├── .env.example
+├── requirements.txt
+├── CITATION.cff
+├── LICENSE
+├── THIRD_PARTY_NOTICES.md
+│
+├── 01_Datasets/
+│   ├── F-Droid/
+│   ├── CLAP/
+│   └── Pan/
+│
+├── 02_Zero_Shot/
+│   ├── code/
+│   │   └── Experiments_1_and_2_ZeroShot_and_Prompting.py
+│   └── outputs/
+│       ├── Embedding/
+│       ├── NLI/
+│       └── LLM/
+│
+├── 03_Prompting/
+│   ├── code/
+│   │   └── Experiments_1_and_2_ZeroShot_and_Prompting.py
+│   ├── prompt_materials/
+│   │   ├── Prompt_Templates.txt
+│   │   └── Few_Shot_Examples.docx
+│   └── outputs/
+│       ├── GPT/
+│       └── LLAMA/
+│
+├── 04_PEFT/
+│   ├── code/
+│   │   └── Experiment_3_PEFT_FineTuning.py
+│   ├── keyword_sets/
+│   │   ├── keyword_extraction.py
+│   │   ├── clean_keywords.csv
+│   │   ├── Computer_Science_D_2.bin
+│   │   └── README.md
+│   └── outputs/
+│       ├── only lora/
+│       ├── only Dora/
+│       ├── Lora with spars on/
+│       └── Dora with spars on/
+│
+├── 05_Analysis/
+│   ├── README_Analysis.md
+│   ├── ALL_results_summary.xlsx
+│   ├── ANALYSIS.xlsx
+│   └── Error_Analysis/
+│
+└── Reproducibility_Rerun/
+    ├── README_Rerun.md
+    ├── rerun_metadata.txt
+    ├── logs/
+    └── results/
 ```
 
-The same Experiment 1/2 source file is included under both `02_Zero_Shot/code/` and `03_Prompting/code/` because the original implementation uses one script for both zero-shot and prompting configurations. The file contents are identical.
+------------------------------------------------------------------------
 
 ## Datasets
 
-Three existing benchmark datasets are used independently. Their original label taxonomies are retained; no cross-dataset label remapping is performed.
+Three benchmark datasets are used independently. Original label
+taxonomies are retained; no cross-dataset label remapping is performed.
 
-| Dataset | Reviews | Classes |
-|---|---:|---:|
-| F-Droid | 2,841 | 2 |
-| CLAP | 3,000 | 7 |
-| Pan | 1,390 | 4 |
+  Dataset     Reviews   Classes
+  --------- --------- ---------
+  F-Droid       2,841         2
+  CLAP          3,000         7
+  Pan           1,390         4
 
-The dataset files used by the experiments are provided under `01_Datasets/`. Source publications and attribution information should be consulted before reusing these datasets outside the purpose of reproducing this study.
+Source publications and attribution should be consulted before reusing
+these datasets outside the purpose of reproducing this study.
 
-## Experiment 1: Zero-shot classification
+------------------------------------------------------------------------
 
-Experiment 1 evaluates embedding-based, NLI-based, and LLM-based zero-shot classifiers. No task-specific training is performed.
+## Experiment 1: Zero-Shot Classification
 
-The LLM runs use:
+Experiment 1 evaluates 13 models across three families with no
+task-specific training:
 
-- **GPT-4o** through the OpenAI API.
-- **Llama-3.1-8B-Instant** through the Groq API.
+-   **Embedding (7):** ALBERT-base-v2, all-MPNet-base-v2,
+    BERT-base-uncased, DistilBERT-base-uncased, MiniLM
+    (all-MiniLM-L6-v2), RoBERTa-base, XLNet-base-cased
+-   **NLI (4):** Cross-Encoder DeBERTa-v3-base, DeBERTa-v3-large
+    (MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli),
+    RoBERTa-large-MNLI, BART-large-MNLI
+-   **LLM (2):** Meta-Llama-3-8B-Instruct (local, HuggingFace), GPT-4o
+    (OpenAI API)
 
-The experimental source is:
+**Total: 13 × 3 = 39 runs.**
 
-`02_Zero_Shot/code/experiment1_zero_shot_and_experiment2_prompting.py`
+Source:
+`02_Zero_Shot/code/Experiments_1_and_2_ZeroShot_and_Prompting.py` Raw
+outputs: `02_Zero_Shot/outputs/{Embedding,NLI,LLM}/`
 
-Raw output workbooks are stored under `02_Zero_Shot/outputs/` and are organised by model family and model name.
+------------------------------------------------------------------------
 
 ## Experiment 2: Prompting
 
-Experiment 2 evaluates GPT-4o and Llama-3.1-8B-Instant using seven prompting configurations constructed from Few-Shot, Persona, and Chain-of-Thought (CoT) components.
+Experiment 2 evaluates **Meta-Llama-3-8B-Instruct** and **GPT-4o** using
+seven prompting configurations constructed from Few-Shot, Persona, and
+Chain-of-Thought (CoT) components:
 
-The exact prompt components are provided in:
+1.  Few-Shot
+2.  Persona + Zero-Shot
+3.  Persona + Few-Shot
+4.  CoT + Zero-Shot
+5.  CoT + Few-Shot
+6.  Persona + CoT + Zero-Shot
+7.  Persona + CoT + Few-Shot
 
-`03_Prompting/prompt_materials/Prompt_Templates.txt`
+**Total: 2 × 7 × 3 = 42 runs.**
 
-The externally constructed few-shot examples are provided in:
+The exact prompt components are provided in
+`03_Prompting/prompt_materials/Prompt_Templates.txt`. The externally
+constructed few-shot examples (two per category, independent of the
+benchmark datasets) are in
+`03_Prompting/prompt_materials/Few_Shot_Examples.docx`.
 
-`03_Prompting/prompt_materials/Few_Shot_Examples.docx`
+Source: same file as Experiment 1. Raw outputs:
+`03_Prompting/outputs/{GPT,LLAMA}/`
 
-Two examples per category are used in the few-shot configurations. These examples were constructed independently of the benchmark datasets.
-
-The experimental source is:
-
-`03_Prompting/code/experiment1_zero_shot_and_experiment2_prompting.py`
-
-Raw output workbooks for all prompting configurations are stored under `03_Prompting/outputs/`.
+------------------------------------------------------------------------
 
 ## Experiment 3: PEFT
 
-Experiment 3 adapts **Meta-LLaMA-3-8B** using four configurations:
+Experiment 3 adapts **Meta-Llama-3-8B-Instruct** using four
+configurations:
 
-1. LoRA
-2. DoRA
-3. LoRA + Compound Sparse Attention
-4. DoRA + Compound Sparse Attention
+1.  LoRA (Sparse OFF)
+2.  DoRA (Sparse OFF)
+3.  LoRA + Compound Sparse Attention
+4.  DoRA + Compound Sparse Attention
 
-The main fixed settings used in this experiment are:
+**Total: 4 × 3 = 12 runs, each with stratified 10-fold
+cross-validation.**
 
-| Setting | Value |
-|---|---|
-| Cross-validation | Stratified 10-fold |
-| Validation | 10% of the original training fold |
-| Oversampling | Training portion only |
-| Learning rate | 5e-5 |
-| Epochs | 3 |
-| Train batch size | 4 |
-| Evaluation batch size | 16 |
-| Maximum sequence length | 256 |
-| LoRA rank | 8 |
-| LoRA alpha | 16 |
-| LoRA dropout | 0.05 |
-| Warmup ratio | 0.1 |
-| Early stopping | Patience = 2 |
-| Random seed | 42 |
-| Quantisation | 4-bit NF4 |
+Fixed settings:
 
-The source used for these experiments is:
+  Setting                   Value
+  ------------------------- -------------------------------------
+  Base model                meta-llama/Meta-Llama-3-8B-Instruct
+  Cross-validation          Stratified 10-fold
+  Validation split          10% of the original training fold
+  Oversampling              Training portion only
+  Learning rate             5e-5
+  Epochs                    3
+  Train batch size          4
+  Evaluation batch size     16
+  Maximum sequence length   256
+  LoRA rank                 8
+  LoRA alpha                16
+  LoRA dropout              0.05
+  Warmup                    10% of total training steps
+  Early stopping            Patience = 2
+  Random seed               42
+  Quantisation              4-bit NF4
 
-`04_PEFT/code/experiment3_lora_dora_finetuning.py`
+**Notes:** - The test fold is not oversampled. - Within each fold, the
+validation split is created from the original training portion *before*
+oversampling; oversampling is then applied only to the remaining
+training data. - Sparse Attention is reported as a **secondary
+ablation** rather than a central contribution.
 
-The test fold is not oversampled. Within each fold, the validation split is created from the original training portion before oversampling, and oversampling is then applied only to the remaining training data.
+Source: `04_PEFT/code/Experiment_3_PEFT_FineTuning.py` Raw outputs:
+`04_PEFT/outputs/{only lora, only Dora, Lora with spars on, Dora with spars on}/`
 
-Raw fold-level predictions, classification reports, summaries, and aggregate result files are stored under `04_PEFT/outputs/`.
+### Keyword Extraction (for Compound Sparse Attention)
 
-## Keyword extraction and Compound Sparse Attention
+Keyword-generation materials are provided in `04_PEFT/keyword_sets/`:
 
-The keyword-generation materials are stored under `04_PEFT/keyword_sets/`:
+-   `keyword_sets/keyword_extraction.py` --- extraction script
+-   `keyword_sets/Computer_Science_D_2.bin` --- external Computer
+    Science Word2Vec resource
+-   `keyword_sets/clean_keywords.csv` --- final extracted keyword sets
+    used by the PEFT code
 
-- `keyword_extraction.py` — extraction procedure.
-- `Computer_Science_D_2.bin` — external Computer Science Word2Vec resource used by the extraction script.
-- `clean_keywords.csv` — final extracted keyword sets used in the experiment.
+The extraction procedure adapts the general methodology of Alhoshan,
+Ferrari, and Zhao (2023). The extracted terms are **not** used as
+category representations for zero-shot classification; they act as fixed
+external signals to activate global positions in Compound Sparse
+Attention. Extraction is performed offline and does **not** use the
+F-Droid, CLAP, or Pan review texts.
 
-The extraction procedure follows the general methodology used by Alhoshan, Ferrari, and Zhao in *Zero-shot learning for requirements classification: An exploratory study* (Information and Software Technology, 2023), where semantically related terms are obtained from a Wikipedia-based Computer Science resource using word embeddings.
+To reproduce keyword extraction:
 
-The purpose is different in this study. The extracted terms are not used as category representations for zero-shot classification. They are used as fixed external semantic signals to activate global positions in the Compound Sparse Attention mechanism. Keyword extraction is performed offline and does not use the F-Droid, CLAP, or Pan review texts.
-
-The extraction script uses `TOP_K = 10`. After cross-class duplicate removal, the final CSV contains the exact keyword sets used by the PEFT code. The CLAP `Other` category intentionally has no keywords.
-
-To run the extraction script, install the dependencies and the spaCy English model:
-
-```bash
+``` bash
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
-python 04_PEFT/keyword_sets/keyword_extraction.py
+cd 04_PEFT/keyword_sets
+python keyword_extraction.py
 ```
 
-Run it from the `04_PEFT/keyword_sets/` directory so that `Computer_Science_D_2.bin` is available at the path expected by the script.
+------------------------------------------------------------------------
 
-## Analysis files
+## Reproducibility Re-Run
 
-The main consolidated analysis files are under `05_Analysis/`:
+To validate reproducibility, five representative configurations (one per
+family/paradigm) were independently re-executed:
 
-- `All_Results_Summary.xlsx` — consolidated performance, latency, PEFT efficiency, stability, and re-run tables.
-- `Statistical_Analysis.xlsx` — performance, variability, and McNemar analysis tables.
-- `Efficiency_Tables_Final.xlsx` — final efficiency tables for Experiments 1–3.
-- `Validation_Results.xlsx` — independent re-run validation results.
+  \#   Paradigm             Config                    Dataset
+  ---- -------------------- ------------------------- ---------
+  1    Exp1 --- Embedding   DistilBERT                F-Droid
+  2    Exp1 --- NLI         RoBERTa-large-MNLI        F-Droid
+  3    Exp1 --- LLM         GPT-4o (Zero-Shot)        Pan
+  4    Exp2 --- Prompting   GPT-4o + CoT + Few-Shot   CLAP
+  5    Exp3 --- PEFT        DoRA + Sparse ON          F-Droid
 
-The original experiment-level workbooks are retained under the corresponding experiment output directories so the consolidated tables can be checked against the raw results.
+**Maximum observed absolute deviation in Macro-F1 = 0.0056** (GPT-4o
+CoT+FS on CLAP). Because the `gpt-4o` alias was used without a dated
+snapshot, exact long-term reproduction of API-based results cannot be
+guaranteed. The locally executed representative configurations
+reproduced their reported values exactly in the re-execution.
+
+Full results, logs, metadata, and PEFT retrained fold data are in
+`Reproducibility_Rerun/`.
+
+------------------------------------------------------------------------
 
 ## Installation
 
-A Python environment with CUDA support is recommended for local model execution and is required for the PEFT experiments.
+A Python environment with CUDA support is required for local model
+execution and for the PEFT experiments.
 
-```bash
+``` bash
 python -m venv .venv
-source .venv/bin/activate   # Linux/macOS
+source .venv/bin/activate      # Linux/macOS
+# .venv\Scripts\activate       # Windows
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 ```
 
-On Windows, activate the environment with:
+The reported experiments were executed on **Lambda Labs, NVIDIA
+A100-SXM4 40 GB**, with the following environment:
 
-```text
-.venv\Scripts\activate
-```
+-   Python 3.10.12
+-   torch 2.14.0+cu130
+-   transformers 5.17.0
+-   peft 0.20.0
+-   accelerate 1.15.0
+-   CUDA 13.0
 
-The PEFT experiments reported in the study were executed on Lambda Labs using an NVIDIA A100-SXM4 40 GB GPU.
+------------------------------------------------------------------------
 
-## API credentials
+## API Credentials
 
-API keys are not stored in this repository. Create the required environment variables before running API-based experiments.
+API keys are **not stored** in this repository. Create the required
+environment variables before running API-based or gated-model
+experiments.
 
 A template is provided in `.env.example`:
 
-```text
-OPENAI_API_KEY=
-GROQ_API_KEY=
+    OPENAI_API_KEY=       # required for GPT-4o
+    HF_TOKEN=             # required for Meta-Llama-3-8B-Instruct (HuggingFace gated)
+
+The code reads these values from the environment. Do **not** commit
+personal API keys to the repository.
+
+**GPT-4o access dates for the reported experiments:** - Zero-Shot
+GPT-4o: 12 September 2026 - Prompting GPT-4o: 13 September 2026 - Re-run
+GPT-4o (Pan ZS): 16 September 2026 06:23:50 UTC - Re-run GPT-4o (CLAP
+CoT+FS): 16 September 2026 06:55:47 UTC
+
+Since a dated snapshot was not pinned (the default `gpt-4o` alias was
+used), exact long-term reproducibility of GPT-4o results cannot be
+guaranteed.
+
+------------------------------------------------------------------------
+
+## Execution
+
+The replication package provides the experiment scripts and the reported
+raw outputs. It does not include a single automation wrapper for all 93
+reported runs. Experiments should be configured and executed using the
+corresponding scripts and configuration variables documented in the
+package.
+
+### Zero-Shot and Prompting
+
+Source script:
+
+``` text
+02_Zero_Shot/code/Experiments_1_and_2_ZeroShot_and_Prompting.py
 ```
 
-The code reads these values from the environment. Do not commit personal API keys to the repository.
-
-The API-based experiments reported in the paper were executed in April 2026. Provider-hosted models can change over time, so exact future reproduction of API outputs may be affected by provider-side model updates even when the prompt and experimental settings are unchanged.
-
-## Basic execution
-
-### Zero-shot or prompting
-
-Edit or provide the dataset/model configuration expected by the combined Experiment 1/2 script, set API credentials when an API model is selected, and run:
-
-```bash
-python 02_Zero_Shot/code/experiment1_zero_shot_and_experiment2_prompting.py
-```
-
-The same source file under `03_Prompting/code/` is provided for convenience when reproducing Experiment 2.
+The script contains the model, dataset, and prompting configuration used
+for the reported Zero-Shot and Prompting experiments. The exact prompt
+materials are provided under `03_Prompting/prompt_materials/`.
 
 ### PEFT
 
-The PEFT script uses environment variables for the main run selection. For example:
+Source script:
 
-```bash
-DATASET=clap \
-DATA_PATH="01_Datasets/CLAP/3000 review.csv" \
-PEFT_METHOD=dora \
-BASE_MODEL="meta-llama/Meta-Llama-3-8B" \
-python 04_PEFT/code/experiment3_lora_dora_finetuning.py
+``` text
+04_PEFT/code/Experiment_3_PEFT_FineTuning.py
 ```
 
-Set the sparse-attention switch in the experimental configuration according to the configuration being reproduced. The source code contains the keyword sets used in the reported sparse-attention runs.
+The reported PEFT configurations use LoRA or DoRA with Compound Sparse
+Attention enabled or disabled. Each reported configuration is evaluated
+using stratified 10-fold cross-validation.
 
-## Reproducibility notes
+Because dataset locations and experiment selections are
+configuration-dependent, verify the dataset path and selected
+configuration in the relevant script before execution. The raw outputs
+supplied in the package provide the reported results for verification.
 
-- The three datasets are evaluated independently.
-- No preprocessing pipeline specific to one dataset is introduced.
-- Prompting examples are external to the evaluation datasets.
-- PEFT uses stratified 10-fold cross-validation.
-- Validation and test data are fixed before training-only oversampling.
-- The random seed is fixed at 42 for the reported PEFT experiments.
-- The clean source files supplied here correspond to the implementations used for the reported experiments; comments and embedded credentials were removed from the public copies without changing the experimental logic.
-- `SHA256SUMS.txt` can be used to check whether package files were modified after release.
+------------------------------------------------------------------------
+
+## Analysis Files
+
+Consolidated analysis is provided under `05_Analysis/`:
+
+-   `ALL_results_summary.xlsx` --- consolidated experimental result
+    tables used to construct the manuscript results.
+-   `ANALYSIS.xlsx` --- statistical analyses, including McNemar tests,
+    paired bootstrap confidence intervals, the GEE paradigm--dataset
+    interaction analysis, and efficiency/latency analyses.
+-   `Error_Analysis/` --- qualitative error-analysis materials,
+    including the coded sample, second-coder materials, disagreement
+    resolution, and analysis scripts.
+-   `Reproducibility_Rerun/` --- independent re-execution materials,
+    logs, metadata, and outputs for the five representative
+    configurations reported in the manuscript.
+
+The qualitative error analysis contains 118 coded instances. A
+stratified 30-instance subsample (25.4%) was independently double-coded;
+the pre-consensus agreement was 53.3% and Cohen's κ was 0.417.
+Disagreements were resolved by discussion before the final coding was
+reported.
+
+Original experiment-level outputs are retained in the experiment folders
+so that the consolidated results can be checked against the raw outputs.
+
+------------------------------------------------------------------------
+
+## Reproducibility Notes
+
+-   The three datasets are evaluated independently; no cross-dataset
+    label remapping.
+-   The **same instruction-tuned checkpoint (Meta-Llama-3-8B-Instruct)**
+    is used across all three paradigms to eliminate the checkpoint-level
+    confound of prior work.
+-   Prompting few-shot examples are external to the evaluation datasets.
+-   PEFT uses stratified 10-fold cross-validation; validation and test
+    data are fixed before training-only oversampling.
+-   The random seed is fixed at 42 for the reported PEFT experiments.
+-   Comments and embedded credentials were removed from the public
+    copies of the code without changing the experimental logic.
+-   The `Reproducibility_Rerun/` directory documents an independent
+    re-execution; the maximum observed Macro-F1 deviation among the
+    representative configurations was 0.0056.
+
+------------------------------------------------------------------------
 
 ## Citation
 
-If you use this package, please cite the associated paper. The final publication details and DOI will be added after publication.
+If you use this package, please cite the associated paper. Publication
+venue and article DOI will be added after publication.
 
-```text
-K. Althobiti, "A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification," publication details forthcoming.
-```
+    K. Althobiti and H. A. A. Al-Hashimi, "A Unified Evaluation Protocol for Cross-Paradigm Mobile App Review Classification," publication details forthcoming.
 
-## Third-party materials
+------------------------------------------------------------------------
 
-Some datasets and the Computer Science Word2Vec resource originate from prior research. Their inclusion here does not change the ownership or licensing of those materials. See `THIRD_PARTY_NOTICES.md` for attribution and redistribution notes.
+## Third-Party Materials
+
+Some datasets, the Meta-Llama-3-8B-Instruct weights, GPT-4o, and the
+Computer Science Word2Vec resource originate from prior or proprietary
+sources. Their inclusion here does not change the ownership or licensing
+of those materials. Redistribution rights for third-party resources,
+including `Computer_Science_D_2.bin`, must be verified before public
+release. See `THIRD_PARTY_NOTICES.md`.

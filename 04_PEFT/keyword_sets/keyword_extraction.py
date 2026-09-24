@@ -5,12 +5,12 @@ import spacy
 from string import punctuation
 from collections import Counter
 
-# ========= 1) إعدادات =========
+# ========= 1) Settings =========
 MODEL_PATH = "Computer_Science_D_2.bin"
 TOP_K = 10
 PROBE_MULTIPLIER = 5
 
-# ========= 2) Seeds (القديمة) =========
+# ========= 2) Seeds =========
 SEEDS = {
     "clap": {
         "Bug": ["bug"],
@@ -35,7 +35,7 @@ SEEDS = {
     }
 }
 
-# ========= 3) تحميل Word2Vec =========
+# ========= 3) Load Word2Vec =========
 def load_vectors(path):
     if not os.path.exists(path):
         raise FileNotFoundError(f"Model not found: {path}")
@@ -83,7 +83,7 @@ def filter_words(words):
         out.append(w2)
     return out
 
-# ========= 5) استخراج كلمات =========
+# ========= 5) Keyword extraction =========
 def extract_from_seed(seed):
     if seed not in kv:
         return []
@@ -91,7 +91,7 @@ def extract_from_seed(seed):
     words = [w for w, _ in candidates]
     return filter_words(words)
 
-# ========= 6) دمج multi-seeds =========
+# ========= 6) Merge multi-seeds =========
 def get_keywords_multi_seed(seeds):
     counter = Counter()
 
@@ -102,7 +102,7 @@ def get_keywords_multi_seed(seeds):
     ranked = [w for w, _ in counter.most_common()]
     return ranked[:TOP_K]
 
-# ========= 7) إزالة التكرار =========
+# ========= 7) Remove duplicates =========
 def remove_cross_class_duplicates_balanced(class_dict):
     sorted_classes = sorted(class_dict.items(), key=lambda x: len(x[1]), reverse=True)
 
@@ -119,7 +119,7 @@ def remove_cross_class_duplicates_balanced(class_dict):
 
     return cleaned
 
-# ========= 8) التنفيذ =========
+# ========= 8) Execution =========
 results = []
 
 for dataset_name, categories in SEEDS.items():
@@ -158,7 +158,7 @@ for dataset_name, categories in SEEDS.items():
             "Keywords": ", ".join(words)
         })
 
-# ========= 9) حفظ =========
+# ========= 9) Save =========
 df = pd.DataFrame(results)
 df.to_csv("clean_keywords.csv", index=False, encoding="utf-8")
 
